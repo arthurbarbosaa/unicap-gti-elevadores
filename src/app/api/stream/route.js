@@ -1,23 +1,29 @@
 import { NextResponse } from "next/server";
 
 const problemsList = [];
-let streamController;
+const streamControllers = new Set();
 
 export async function GET() {
   const stream = new ReadableStream({
     start(controller) {
-      streamController = {
+      const wrappedController = {
         enqueue: (event, data) => {
-          controller.enqueue(
-            `event: ${event}\n` + `data: ${JSON.stringify(data)}\n\n`
-          );
+          try {
+            controller.enqueue(
+              `event: ${event}\n` + `data: ${JSON.stringify(data)}\n\n`
+            );
+          } catch (error) {
+            streamControllers.delete(wrappedController);
+          }
         },
       };
 
-      streamController.enqueue("status", "running 🟢");
+      streamControllers.add(wrappedController);
+      wrappedController.enqueue("status", "running 🟢");
+      wrappedController.enqueue("problem", problemsList);
     },
     cancel() {
-      streamController = null;
+      streamControllers.delete(this.wrappedController);
     },
   });
 
@@ -31,9 +37,13 @@ export async function GET() {
 }
 
 export function notifyClients(ip) {
-  if (streamController) {
+  if (streamControllers.size > 0) {
     problemsList.push(ip);
-    streamController.enqueue("problem", problemsList);
+    const activeControllers = new Set(streamControllers);
+
+    activeControllers.forEach((controller) => {
+      controller.enqueue("problem", problemsList);
+    });
   } else {
     console.warn("no clients connected to send data");
   }
