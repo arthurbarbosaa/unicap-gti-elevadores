@@ -15,9 +15,13 @@ export async function GET() {
       const streamController = {
         id: Date.now().toString(), // Identificador único para cada conexão
         enqueue: (event, data) => {
-          controller.enqueue(
-            `event: ${event}\n` + `data: ${JSON.stringify(data)}\n\n`
-          );
+          try {
+            controller.enqueue(
+              `event: ${event}\n` + `data: ${JSON.stringify(data)}\n\n`
+            );
+          } catch (error) {
+            streamControllers.delete(wrappedController);
+          }
         },
       };
 
