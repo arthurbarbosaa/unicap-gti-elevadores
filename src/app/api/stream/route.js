@@ -20,7 +20,7 @@ export async function GET() {
               `event: ${event}\n` + `data: ${JSON.stringify(data)}\n\n`
             );
           } catch (error) {
-            streamControllers.delete(wrappedController);
+            streamController.delete(wrappedController);
           }
         },
       };
