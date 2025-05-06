@@ -19,6 +19,6 @@ export async function POST(req) {
 
   return NextResponse.json(
     { message: "IP removido com sucesso" },
-    { status: 200 }
-  );
+    { status: 200 }
+  );
 }

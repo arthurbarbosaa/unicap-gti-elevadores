@@ -42,6 +42,6 @@ export default function Alert({ message, type = "info" }) {
           Resolver
         </button>
       )}
-    </div>
-  );
+    </div>
+  );
 }

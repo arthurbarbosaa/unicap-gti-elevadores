@@ -17,7 +17,7 @@ export async function GET() {
         enqueue: (event, data) => {
           try {
             controller.enqueue(
-              `event:${event}\n + data: ${JSON.stringify(data)}\n\n`
+              `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`
             );
           } catch (error) {
             global.connections.controllers.delete(streamController);
@@ -71,6 +71,6 @@ export function notifyClients(ip) {
       `Notificação enviada para ${global.connections.controllers.size} clientes. IP: ${ip}`
     );
   } else {
-    console.warn("No clients connected to send data");
-  }
+    console.warn("No clients connected to send data");
+  }
 }
