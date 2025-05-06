@@ -1,6 +1,8 @@
 "use client";
+import { useEffect, useRef } from "react";
 
 export default function Alert({ message, type = "info" }) {
+  const audioRef = useRef(null);
   const alertStyles = {
     info: "bg-blue-100 border-blue-500 text-blue-700",
     success: "bg-green-100 border-green-500 text-green-700",
@@ -9,6 +11,14 @@ export default function Alert({ message, type = "info" }) {
   };
 
   const style = alertStyles[type] || alertStyles.info;
+
+  useEffect(() => {
+    if (type === "error" && audioRef.current) {
+      audioRef.current.play().catch((error) => {
+        console.error("Erro ao reproduzir o som:", error);
+      });
+    }
+  }, [message, type]);
 
   const handleResolve = async () => {
     try {
@@ -33,6 +43,7 @@ export default function Alert({ message, type = "info" }) {
       className={`${style} px-4 py-3 rounded-lg border-l-4 mb-4 shadow-md transition-all duration-300 ease-in-out flex justify-between items-center`}
       role="alert"
     >
+      <audio ref={audioRef} src="/alert.mp3" preload="auto" />
       <p className="font-medium">{message}</p>
       {type === "error" && (
         <button
