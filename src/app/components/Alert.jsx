@@ -10,12 +10,38 @@ export default function Alert({ message, type = "info" }) {
 
   const style = alertStyles[type] || alertStyles.info;
 
+  const handleResolve = async () => {
+    try {
+      const response = await fetch("/api/alert/resolve", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ip: message }),
+      });
+
+      if (!response.ok) {
+        console.error("Erro ao resolver o problema");
+      }
+    } catch (error) {
+      console.error("Erro ao resolver o problema:", error);
+    }
+  };
+
   return (
     <div
-      className={`${style} px-4 py-3 rounded-lg border-l-4 mb-4 shadow-md transition-all duration-300 ease-in-out`}
+      className={`${style} px-4 py-3 rounded-lg border-l-4 mb-4 shadow-md transition-all duration-300 ease-in-out flex justify-between items-center`}
       role="alert"
     >
       <p className="font-medium">{message}</p>
-    </div>
-  );
+      {type === "error" && (
+        <button
+          onClick={handleResolve}
+          className="bg-white text-gray-700 font-semibold py-1 px-3 rounded-md hover:bg-gray-100 transition-colors duration-200 ml-4 border border-gray-300"
+        >
+          Resolver
+        </button>
+      )}
+    </div>
+  );
 }
