@@ -1,5 +1,9 @@
+// stream/route.js
 import { NextResponse } from "next/server";
 
+// Use um armazenamento global para manter os controladores e clientes entre solicitações
+// Isso pode ser um módulo separado ou um serviço externo em produção
+// Importante: Esta é uma solução simplificada para demonstração
 global.connections = global.connections || {
   controllers: new Set(),
   problemsList: [],
@@ -13,10 +17,10 @@ export async function GET() {
         enqueue: (event, data) => {
           try {
             controller.enqueue(
-              `event: ${event}\n` + `data: ${JSON.stringify(data)}\n\n`
+              `event:${event}\n + data: ${JSON.stringify(data)}\n\n`
             );
           } catch (error) {
-            streamController.delete(wrappedController);
+            global.connections.controllers.delete(streamController);
           }
         },
       };
@@ -58,6 +62,7 @@ export function notifyClients(ip) {
   if (global.connections.controllers.size > 0) {
     global.connections.problemsList.push(ip);
 
+    // Notificar todos os clientes conectados
     global.connections.controllers.forEach((controller) => {
       controller.enqueue("problem", global.connections.problemsList);
     });
@@ -66,6 +71,6 @@ export function notifyClients(ip) {
       `Notificação enviada para ${global.connections.controllers.size} clientes. IP: ${ip}`
     );
   } else {
-    console.warn("No clients connected to send data");
-  }
+    console.warn("No clients connected to send data");
+  }
 }
