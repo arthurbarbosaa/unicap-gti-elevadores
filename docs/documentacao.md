@@ -11,6 +11,13 @@ O sistema foi desenvolvido utilizando Next.js 14, uma framework React moderna qu
 - **Server-Sent Events (SSE)**: Protocolo para comunicação em tempo real
 - **API Routes**: Endpoints para gerenciamento de alertas
 
+#### Integração Hardware-Software
+
+- **Protocolo HTTP**: Comunicação entre dispositivos e servidor
+- **Sistema de IPs Autorizados**: Segurança na comunicação com dispositivos
+- **Eventos em Tempo Real**: Notificação imediata de problemas detectados
+- **Feedback Sonoro**: Alerta sonoro para problemas críticos
+
 ## Componentes
 
 ### 1. Frontend
